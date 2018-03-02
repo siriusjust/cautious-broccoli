@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Accepts and transforms Facebook data
+Resources:
+  FBIngest:
+    Properties:
+      CodeUri: s3://320-lambdas/1c34457fb7023b24a963bb6ac29fb8bf
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN:
+            Ref: FBTopic
+      Events:
+        FBApi:
+          Properties:
+            Method: POST
+            Path: /PushEvent
+          Type: Api
+      Handler: fb_ingest.handler
+      Policies:
+        Statement:
+        - Action: SNS:Publish
+          Effect: Allow
+          Resource:
+            Ref: FBTopic
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+  FBTopic:
+    Properties:
+      Subscription:
+      - Endpoint:
+          Fn::GetAtt:
+          - FBTransform
+          - Arn
+        Protocol: lambda
+    Type: AWS::SNS::Topic
+  FBTransform:
+    Properties:
+      CodeUri: s3://320-lambdas/1c34457fb7023b24a963bb6ac29fb8bf
+      Events:
+        FBSNS:
+          Properties:
+            Topic:
+              Ref: FBTopic
+          Type: SNS
+      Handler: fb_transform.handler
+      Runtime: python3.6
+    Type: AWS::Serverless::Function
+  FBTransformInvokePermission:
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: FBTransform
+      Principal: sns.amazonaws.com
+    Type: AWS::Lambda::Permission
+Transform: AWS::Serverless-2016-10-31
