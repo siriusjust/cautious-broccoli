@@ -1,0 +1,9 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - aws cloudformation package --template-file app_spec.yml --s3-bucket team --output-template-file packaged_template.yml
+artifacts:
+  type: zip
+  files:
+    app_spec.yml
