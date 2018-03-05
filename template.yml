@@ -20,6 +20,7 @@ Resources:
       FunctionName: !Sub "${TeamName}-${InputService}-Ingest"
       Handler: fb_ingest.handler
       Runtime: python3.6
+      CodeUri: ./
       Policies:
         Statement:
           - Effect: Allow
@@ -40,6 +41,7 @@ Resources:
       FunctionName: !Sub "${TeamName}-${InputService}-Transform"
       Handler: fb_transform.handler
       Runtime: python3.6
+      CodeUri: ./
       Events:
         FBSNS:
           Type: SNS
