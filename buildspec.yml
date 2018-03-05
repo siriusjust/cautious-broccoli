@@ -2,7 +2,7 @@ version: 0.1
 phases:
   install:
     commands:
-      - aws cloudformation package --template-file template.yml --s3-bucket team1-code --output-template-file packaged_template.yml --parameters ParameterKey=TeamName,ParameterValue=Team1 ParameterKey=InputService,ParameterValue=FB
+      - aws cloudformation package --template-file template.yml --s3-bucket team1-code --output-template-file packaged_template.yml --parameter-override TeamName=Team1 InputService=Facebook
 artifacts:
   type: zip
   files:
