@@ -1,23 +1,30 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Accepts and transforms Facebook data
+Parameters:
+  TeamName:
+    Type: String
+  InputService:
+    Type: String
 Resources: 
-  team1_FBTopic:
+  SNSTopic:
     Type: AWS::SNS::Topic
     Properties:
+      TopicName: !Sub "${TeamName}-${InputService}-Topic"
       Subscription:
       - Protocol: lambda
-        Endpoint: !GetAtt team1_FBTransform.Arn
-  team1_FBIngest:
+        Endpoint: !GetAtt TransformLambda.Arn
+  InjestLambda:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "${TeamName}-${InputService}-Ingest"
       Handler: fb_ingest.handler
       Runtime: python3.6
       Policies:
         Statement:
           - Effect: Allow
             Action: SNS:Publish
-            Resource: !Ref team1_FBTopic
+            Resource: !Ref SNSTopic
       Events:
         FBApi:
           Type: Api
@@ -26,20 +33,21 @@ Resources:
             Method: POST
       Environment:
         Variables:
-          SNS_TOPIC_ARN: !Ref team1_FBTopic
-  team1_FBTransform:
+          SNS_TOPIC_ARN: !Ref SNSTopic
+  TransformLambda:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "${TeamName}-${InputService}-Transform"
       Handler: fb_transform.handler
       Runtime: python3.6
       Events:
         FBSNS:
           Type: SNS
           Properties:
-            Topic: !Ref team1_FBTopic
-  team1_FBTransformInvokePermission:
+            Topic: !Ref SNSTopic
+  TransformInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref team1_FBTransform
+      FunctionName: !Ref TransformLambda
       Principal: sns.amazonaws.com
