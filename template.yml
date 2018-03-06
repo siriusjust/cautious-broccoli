@@ -52,10 +52,13 @@ Resources:
           Type: SNS
           Properties:
             Topic: !Ref SNSTopic
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref OutputBucket
   OutputBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "output-bucket"
+      BucketName: "meaningless-bucket"
   TransformInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
