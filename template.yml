@@ -46,7 +46,7 @@ Resources:
         Statement:
           - Effect: Allow
             Action: S3:PutObject
-            Resource: !Ref OutputBucket
+            Resource: !GetAtt OutputBucket.Arn
       Events:
         FBSNS:
           Type: SNS
