@@ -1,6 +1,7 @@
 {
     "Parameters": {
         "TeamName": "Team1",
-        "InputService": "Facebook"
+        "InputService": "Facebook",
+        "BucketName": "meaningless-bucket-1"
     }
 }

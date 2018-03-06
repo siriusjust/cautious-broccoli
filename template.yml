@@ -6,6 +6,8 @@ Parameters:
     Type: String
   InputService:
     Type: String
+  BucketName:
+    Type: String
 Resources: 
   SNSTopic:
     Type: AWS::SNS::Topic
@@ -58,7 +60,7 @@ Resources:
   OutputBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "meaningless-bucket"
+      BucketName: !Sub "${BucketName}"
   TransformInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
