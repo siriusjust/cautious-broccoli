@@ -55,7 +55,7 @@ Resources:
   OutputBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${TeamName}-${InputService}-OutputBucket"
+      BucketName: "output-bucket"
   TransformInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
