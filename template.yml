@@ -42,11 +42,20 @@ Resources:
       Handler: fb_transform.handler
       Runtime: python3.6
       CodeUri: ./
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action: S3:PutObject
+            Resource: !Ref OutputBucket
       Events:
         FBSNS:
           Type: SNS
           Properties:
             Topic: !Ref SNSTopic
+  OutputBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${TeamName}-${InputService}-OutputBucket"
   TransformInvokePermission:
     Type: AWS::Lambda::Permission
     Properties:
